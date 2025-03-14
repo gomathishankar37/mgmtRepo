@@ -16,7 +16,10 @@ jobs:
       run: |
         COMPONENT_REPO_NAME="${{ github.event.client_payload.repo_name }}"
         COMPONENT_REPO_TAG="${{ github.event.client_payload.release_tag }}"
-        TAG_NAME="release=${COMPONENT_REPO_NAME}:${COMPONENT_REPO_TAG}"
+        # Replace colon with hyphen or underscore
+        COMPONENT_REPO_NAME_SANITIZED=$(echo "${COMPONENT_REPO_NAME}" | sed 's/:/-/g')
+        COMPONENT_REPO_TAG_SANITIZED=$(echo "${COMPONENT_REPO_TAG}" | sed 's/:/-/g')
+        TAG_NAME="release-${COMPONENT_REPO_NAME_SANITIZED}-${COMPONENT_REPO_TAG_SANITIZED}"
         git tag $TAG_NAME
         git push origin $TAG_NAME
 
@@ -24,4 +27,7 @@ jobs:
       run: |
         COMPONENT_REPO_NAME="${{ github.event.client_payload.repo_name }}"
         COMPONENT_REPO_TAG="${{ github.event.client_payload.release_tag }}"
-        echo "New tag created: release=${COMPONENT_REPO_NAME}:${COMPONENT_REPO_TAG}"
+        # Replace colon with hyphen or underscore
+        COMPONENT_REPO_NAME_SANITIZED=$(echo "${COMPONENT_REPO_NAME}" | sed 's/:/-/g')
+        COMPONENT_REPO_TAG_SANITIZED=$(echo "${COMPONENT_REPO_TAG}" | sed 's/:/-/g')
+        echo "New tag created: release-${COMPONENT_REPO_NAME_SANITIZED}-${COMPONENT_REPO_TAG_SANITIZED}"
