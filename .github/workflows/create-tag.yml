@@ -1,0 +1,27 @@
+name: Create Tag on Component Release
+
+on:
+  repository_dispatch:
+    types: [release-triggered]
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Create a New Tag
+      id: create_tag
+      run: |
+        COMPONENT_REPO_NAME="${{ github.event.client_payload.repo_name }}"
+        COMPONENT_REPO_TAG="${{ github.event.client_payload.release_tag }}"
+        TAG_NAME="release=${COMPONENT_REPO_NAME}:${COMPONENT_REPO_TAG}"
+        git tag $TAG_NAME
+        git push origin $TAG_NAME
+
+    - name: Output Tag
+      run: |
+        COMPONENT_REPO_NAME="${{ github.event.client_payload.repo_name }}"
+        COMPONENT_REPO_TAG="${{ github.event.client_payload.release_tag }}"
+        echo "New tag created: release=${COMPONENT_REPO_NAME}:${COMPONENT_REPO_TAG}"
