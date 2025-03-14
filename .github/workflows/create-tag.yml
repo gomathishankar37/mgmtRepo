@@ -1,5 +1,4 @@
 name: Create Tag on Component Release
-
 on:
   repository_dispatch:
     types: [release-triggered]
@@ -10,6 +9,8 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.COMP_PAT }}
 
     - name: Create a New Tag
       id: create_tag
@@ -20,6 +21,8 @@ jobs:
         COMPONENT_REPO_NAME_SANITIZED=$(echo "${COMPONENT_REPO_NAME}" | sed 's/:/-/g')
         COMPONENT_REPO_TAG_SANITIZED=$(echo "${COMPONENT_REPO_TAG}" | sed 's/:/-/g')
         TAG_NAME="release-${COMPONENT_REPO_NAME_SANITIZED}-${COMPONENT_REPO_TAG_SANITIZED}"
+        git config --global user.name 'github-actions'
+        git config --global user.email 'github-actions@github.com'
         git tag $TAG_NAME
         git push origin $TAG_NAME
 
